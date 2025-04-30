@@ -1,4 +1,5 @@
 
+import 'package:cuidapet_mobile/app/core/local_storage/local_storage.dart';
 import 'package:cuidapet_mobile/app/modules/address/address_controller.dart';
 import 'package:cuidapet_mobile/app/modules/address/address_detail/address_detail_module.dart';
 import 'package:cuidapet_mobile/app/modules/address/address_page.dart';
@@ -10,6 +11,7 @@ import 'package:cuidapet_mobile/app/services/address/address_service_impl.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../core/database/sqlite_connection_factory.dart';
+import '../../core/local_storage/shared_preferences/shared_preferences_local_storage_impl.dart';
 
 class AddressModule extends Module {
 
@@ -21,6 +23,7 @@ class AddressModule extends Module {
     i.addLazySingleton<AddressService>(AddressServiceImpl.new); //CoreModule
     i.addLazySingleton<AddressRepository>(AddressRepositoryImpl.new); //CoreModule
     i.addLazySingleton(SqliteConnectionFactory.new);
+    i.addLazySingleton<LocalStorage>(SharedPreferencesLocalStorageImpl.new);
   }
 
   @override

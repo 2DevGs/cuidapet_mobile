@@ -13,6 +13,6 @@ abstract class HomeControllerBase with Store, ControllerLifeCycle {
   }
 
   Future<void> _hasRegisteredAddress() async {
-    await Modular.to.pushNamed('/address/');
+
   }
 }
