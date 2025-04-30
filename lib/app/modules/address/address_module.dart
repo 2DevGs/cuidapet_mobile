@@ -27,7 +27,7 @@ class AddressModule extends Module {
   void routes(RouteManager r) {
     super.routes(r);
     r.child(Modular.initialRoute, child: (_) => const AddressPage());
-    r.module('/detail', module: AddressDetailModule());
+    r.module('/detail/', module: AddressDetailModule());
   }
 
 }

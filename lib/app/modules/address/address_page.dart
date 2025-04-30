@@ -49,13 +49,14 @@ class _AddressPageState extends PageLifeCycleState<AddressController, AddressPag
                   ),
                   _AddressSearchWidget(
                     addressSelectedCallback: (place) {
-                      Modular.to.pushNamed('/address/detail/', arguments: place);
+                      controller.goToAddressDetail(place);
                     },
                   ),
                   const SizedBox(
                     height: 30
                   ),
-                  const ListTile(
+                  ListTile(
+                    onTap: () => controller.myLocation(),
                     leading: CircleAvatar(
                       backgroundColor: Colors.red,
                       radius: 30,
