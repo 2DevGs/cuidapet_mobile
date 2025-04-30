@@ -102,7 +102,12 @@ class _AddressDetailPageState extends State<AddressDetailPage> {
                   readOnly: true,
                   decoration: InputDecoration(
                     labelText: 'Endereço',
-                    suffixIcon: Icon(Icons.edit)
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(widget.place);
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
                   ),
                 ),
               ),
