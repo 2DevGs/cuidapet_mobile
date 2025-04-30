@@ -17,10 +17,11 @@ abstract class AddressControllerBase with Store, ControllerLifeCycle {
   final AddressService _addressService;
 
   @readonly
-  List<AddressEntity> _addresses = [];
+  var _addresses = <AddressEntity>[];
 
   @readonly
-  bool _locationServiceUnavaliable = false;
+  var _locationServiceUnavaliable = false;
+
   @readonly
   PermissionStatus? _permissionStatus;
 
@@ -42,14 +43,16 @@ abstract class AddressControllerBase with Store, ControllerLifeCycle {
 
   @action
   Future<void> myLocation() async {
-
     
+    _permissionStatus = null;
+    _locationServiceUnavaliable = false;
+
     Location location = Location();
 
     final serviceEnable = await location.serviceEnabled();
 
     if(!serviceEnable){
-      _locationServiceUnavaliable = true;
+      _locationServiceUnavaliable = true; 
       return;
     }
 
