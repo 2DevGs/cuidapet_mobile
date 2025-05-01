@@ -13,9 +13,14 @@ import 'package:cuidapet_mobile/app/services/user/user_service.dart';
 import 'package:cuidapet_mobile/app/services/user/user_service_impl.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../../../core/database/sqlite_connection_factory.dart';
 import '../../../core/local_storage/flutter_secure_storage/flutter_secure_storage_local_storage_impl.dart';
 import '../../../core/local_storage/local_storage.dart';
 import '../../../core/local_storage/shared_preferences/shared_preferences_local_storage_impl.dart';
+import '../../../repositories/address/address_repository.dart';
+import '../../../repositories/address/address_repository_impl.dart';
+import '../../../services/address/address_service.dart';
+import '../../../services/address/address_service_impl.dart';
 
 class RegisterModule extends Module {
 
@@ -30,6 +35,9 @@ class RegisterModule extends Module {
     i.addLazySingleton<LocalSecureStorage>(FlutterSecureStorageLocalStorageImpl.new); 
     i.addLazySingleton(AuthStore.new);
     i.addLazySingleton<SocialRepository>(SocialRepositoryImpl.new);
+    i.addLazySingleton<AddressService>(AddressServiceImpl.new);
+    i.addLazySingleton<AddressRepository>(AddressRepositoryImpl.new);
+    i.addLazySingleton(SqliteConnectionFactory.new);
   }
 
    @override

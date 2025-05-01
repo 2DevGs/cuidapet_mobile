@@ -1,11 +1,16 @@
+import 'package:cuidapet_mobile/app/core/database/sqlite_connection_factory.dart';
 import 'package:cuidapet_mobile/app/core/logger/app_logger.dart';
 import 'package:cuidapet_mobile/app/core/logger/logger_app_logger_impl.dart';
 import 'package:cuidapet_mobile/app/modules/auth/login/login_controller.dart';
 import 'package:cuidapet_mobile/app/modules/auth/login/login_page.dart';
+import 'package:cuidapet_mobile/app/repositories/address/address_repository.dart';
+import 'package:cuidapet_mobile/app/repositories/address/address_repository_impl.dart';
 import 'package:cuidapet_mobile/app/repositories/social/social_repository.dart';
 import 'package:cuidapet_mobile/app/repositories/social/social_repository_impl.dart';
 import 'package:cuidapet_mobile/app/repositories/user/user_repository.dart';
 import 'package:cuidapet_mobile/app/repositories/user/user_repository_impl.dart';
+import 'package:cuidapet_mobile/app/services/address/address_service.dart';
+import 'package:cuidapet_mobile/app/services/address/address_service_impl.dart';
 import 'package:cuidapet_mobile/app/services/user/user_service.dart';
 import 'package:cuidapet_mobile/app/services/user/user_service_impl.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -30,6 +35,9 @@ class LoginModule extends Module {
     i.addLazySingleton<LocalStorage>(SharedPreferencesLocalStorageImpl.new);
     i.addLazySingleton<LocalSecureStorage>(FlutterSecureStorageLocalStorageImpl.new); 
     i.addLazySingleton<SocialRepository>(SocialRepositoryImpl.new);
+    i.addLazySingleton<AddressService>(AddressServiceImpl.new);
+    i.addLazySingleton<AddressRepository>(AddressRepositoryImpl.new);
+    i.addLazySingleton(SqliteConnectionFactory.new);
   }
 
    @override
