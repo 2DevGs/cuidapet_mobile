@@ -40,7 +40,9 @@ abstract class HomeControllerBase with Store, ControllerLifeCycle {
   @action
   Future<void> goToAdrressPage() async {
     final address = await Modular.to.pushNamed<AddressEntity>('/address/');
-      _addressEntity = address;
+    if(address != null) {
+    _addressEntity = address;
+    }  
   }
 
 }
