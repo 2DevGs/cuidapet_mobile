@@ -1,6 +1,7 @@
 import 'package:cuidapet_mobile/app/core/database/sqlite_connection_factory.dart';
 import 'package:cuidapet_mobile/app/core/local_storage/local_storage.dart';
 import 'package:cuidapet_mobile/app/core/local_storage/shared_preferences/shared_preferences_local_storage_impl.dart';
+import 'package:cuidapet_mobile/app/modules/core/supplier/supplier_core_module.dart';
 import 'package:cuidapet_mobile/app/modules/home/home_controller.dart';
 import 'package:cuidapet_mobile/app/modules/home/home_page.dart';
 import 'package:cuidapet_mobile/app/repositories/address/address_repository_impl.dart';
@@ -20,6 +21,11 @@ class HomeModule extends Module {
     i.addLazySingleton<LocalStorage>(SharedPreferencesLocalStorageImpl.new);
     i.addLazySingleton(SqliteConnectionFactory.new);
   }
+
+  @override
+  List<Module> get imports => [
+    SupplierCoreModule(),
+  ];
 
   @override
   void routes(RouteManager r) {
