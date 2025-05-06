@@ -18,7 +18,7 @@ class _HomeCategoriesWidget extends StatelessWidget {
               itemCount: _controller.listCategories.length,
               itemBuilder: (context, index) {
                 final category = _controller.listCategories[index];
-                return _CategoryItem(category);
+                return _CategoryItem(category, _controller);
               },
             ),
           );
@@ -29,8 +29,8 @@ class _HomeCategoriesWidget extends StatelessWidget {
 }
 
 class _CategoryItem extends StatelessWidget {
-
   final SupplierCategoryModel _categoryModel;
+  final HomeController _controller;
 
   static const categoriesIcons = {
     'P': Icons.pets,
@@ -38,28 +38,41 @@ class _CategoryItem extends StatelessWidget {
     'C': Icons.store_mall_directory,
   };
 
-  const _CategoryItem(this._categoryModel);
+  const _CategoryItem(this._categoryModel, this._controller);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          CircleAvatar(
-            backgroundColor: context.primaryColorLight,
-            radius: 30,
-            child: Icon(
-              categoriesIcons[_categoryModel.type],
-              size: 30,
-              color: Colors.black,
+    return InkWell(
+      onTap: () {
+        _controller.filterSupplierCategory(_categoryModel);
+      },
+      child: Container(
+        margin: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Observer(
+              builder: (_) {
+                return CircleAvatar(
+                  backgroundColor:
+                      _controller.supplierCategoryFilterSelected?.id ==
+                              _categoryModel.id
+                          ? context.primaryColor
+                          : context.primaryColorLight,
+                  radius: 30,
+                  child: Icon(
+                    categoriesIcons[_categoryModel.type],
+                    size: 30,
+                    color: Colors.black,
+                  ),
+                );
+              },
             ),
-          ),
-          const SizedBox(
-             height: 10,
-          ),
-          Text(_categoryModel.name),
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            Text(_categoryModel.name),
+          ],
+        ),
       ),
     );
   }
