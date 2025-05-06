@@ -1,5 +1,6 @@
 import 'package:cuidapet_mobile/app/core/ui/widgets/messages.dart';
 import 'package:cuidapet_mobile/app/models/supplier_category_model.dart';
+import 'package:cuidapet_mobile/app/models/supplier_nearby_me_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 
@@ -30,12 +31,28 @@ abstract class HomeControllerBase with Store, ControllerLifeCycle {
   @readonly
   var _supplierPageTypeSelected = SupplierPageType.list;
 
+  @readonly
+  var _listSuppliersByAddress = <SupplierNearbyMeModel>[];
+
+  late ReactionDisposer findSuppliersReactionDisposer;
+
   HomeControllerBase({
     required AddressService addressService,
     required SupplierService supplierService,
   }) : _addressService = addressService,
        _supplierService = supplierService;
 
+  @override
+  void onInit([Map<String, dynamic>? params]) {
+    findSuppliersReactionDisposer = reaction((_) => _addressEntity, (address) {
+      findSupplierByAddress();
+    });
+  }
+
+  @override
+  void dispose() {
+    findSuppliersReactionDisposer();
+  }
 
   @override
   Future<void> onReady() async {
@@ -43,9 +60,7 @@ abstract class HomeControllerBase with Store, ControllerLifeCycle {
       Loader.show();
       await _getAddressSelected();
       await _getCategories();
-        if(_addressEntity != null) {
-          _supplierService.findNearBy(_addressEntity!);
-        }
+      
     } finally {
       Loader.hide();
 
@@ -83,6 +98,15 @@ abstract class HomeControllerBase with Store, ControllerLifeCycle {
   @action
   void changeTabSupplier(SupplierPageType supplierPageType) {
     _supplierPageTypeSelected = supplierPageType;
+  }
+
+  Future<void> findSupplierByAddress() async {
+    if(_addressEntity != null) {
+      final suppliers =  await _supplierService.findNearBy(_addressEntity!);
+      _listSuppliersByAddress = [...suppliers];
+    } else {
+      Messages.alert('Para realizar a busca de PetShops você precisa selecionar um endereço');
+    }
   }
 
 }
