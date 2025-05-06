@@ -1,7 +1,6 @@
 part of '../home_page.dart';
 
 class _HomeSupplierTab extends StatelessWidget {
-
   final HomeController homeController;
 
   const _HomeSupplierTab({required this.homeController});
@@ -32,7 +31,6 @@ class _HomeSupplierTab extends StatelessWidget {
 }
 
 class _HomeTabHeader extends StatelessWidget {
-
   final HomeController homeController;
 
   const _HomeTabHeader({
@@ -84,7 +82,6 @@ class _HomeTabHeader extends StatelessWidget {
 }
 
 class _HomeSupplierList extends StatelessWidget {
-
   final HomeController _homeController;
 
   const _HomeSupplierList(this._homeController);
@@ -96,14 +93,13 @@ class _HomeSupplierList extends StatelessWidget {
         Observer(
           builder: (_) {
             return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: _homeController.listSuppliersByAddress.length,
-                (context, index) {
-                  final supplier = _homeController.listSuppliersByAddress[index];
-                  return _HomeSupplierListItemWidget(supplier: supplier);
-                },
-              )
-            );
+                delegate: SliverChildBuilderDelegate(
+              childCount: _homeController.listSuppliersByAddress.length,
+              (context, index) {
+                final supplier = _homeController.listSuppliersByAddress[index];
+                return _HomeSupplierListItemWidget(supplier: supplier);
+              },
+            ));
           },
         ),
       ],
@@ -112,7 +108,6 @@ class _HomeSupplierList extends StatelessWidget {
 }
 
 class _HomeSupplierListItemWidget extends StatelessWidget {
-
   final SupplierNearbyMeModel supplier;
 
   const _HomeSupplierListItemWidget({required this.supplier});
@@ -199,7 +194,7 @@ class _HomeSupplierListItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
                 image: DecorationImage(
                   image: NetworkImage(
-                      supplier.logo,
+                    supplier.logo,
                   ),
                   fit: BoxFit.contain,
                 ),
@@ -213,7 +208,6 @@ class _HomeSupplierListItemWidget extends StatelessWidget {
 }
 
 class _HomeSupplierGrid extends StatelessWidget {
-
   final HomeController homeController;
 
   const _HomeSupplierGrid(this.homeController);
@@ -222,18 +216,22 @@ class _HomeSupplierGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverGrid(
-          delegate: SliverChildBuilderDelegate(
-            childCount: homeController.listSuppliersByAddress.length,
-            (context, index) {
-              final supplier = homeController.listSuppliersByAddress[index];
-              return _HomeSupplierCardItemWidget(supplier);
-            },
-          ), 
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.1,
-          ),
+        Observer(
+          builder: (_) {
+            return SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                childCount: homeController.listSuppliersByAddress.length,
+                (context, index) {
+                  final supplier = homeController.listSuppliersByAddress[index];
+                  return _HomeSupplierCardItemWidget(supplier);
+                },
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.1,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -241,7 +239,6 @@ class _HomeSupplierGrid extends StatelessWidget {
 }
 
 class _HomeSupplierCardItemWidget extends StatelessWidget {
-
   final SupplierNearbyMeModel supplier;
 
   const _HomeSupplierCardItemWidget(this.supplier);
@@ -251,18 +248,17 @@ class _HomeSupplierCardItemWidget extends StatelessWidget {
     return Stack(
       children: [
         Card(
-          margin: EdgeInsets.only(
-            top: 40,
-            left: 10,
-            right: 10,
-            bottom: 10
-          ),
+          margin: EdgeInsets.only(top: 40, left: 10, right: 10, bottom: 10),
           elevation: 5,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: SizedBox.expand(
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 40, right: 10, left: 10, bottom: 10,
+                top: 40,
+                right: 10,
+                left: 10,
+                bottom: 10,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
