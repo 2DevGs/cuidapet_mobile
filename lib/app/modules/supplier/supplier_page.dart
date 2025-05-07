@@ -4,12 +4,48 @@ import 'package:flutter/material.dart';
 
 import 'widgets/supplier_service_widget.dart';
 
-class SupplierPage extends StatelessWidget {
+class SupplierPage extends StatefulWidget {
 
   const SupplierPage({ super.key });
 
-   @override
-   Widget build(BuildContext context) {
+  @override
+  State<SupplierPage> createState() => _SupplierPageState();
+}
+
+class _SupplierPageState extends State<SupplierPage> {
+
+  late ScrollController _scrollController;
+  bool sliverCollapsed = false; // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
+  final sliverCollapsedVN = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+
+      if(_scrollController.offset > 180 && 
+          !_scrollController.position.outOfRange)  {
+            // sliverCollapsed = true; SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
+            sliverCollapsedVN.value = true;
+      } else if(_scrollController.offset <= 180 && 
+          !_scrollController.position.outOfRange) {
+            // sliverCollapsed = false; SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
+            sliverCollapsedVN.value = false;
+      }
+
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'); // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
       return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton.extended(
@@ -29,10 +65,29 @@ class SupplierPage extends StatelessWidget {
           },
         ),
         body: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverAppBar(
               expandedHeight: 200,
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
               pinned: true,
+              title: ValueListenableBuilder<bool>(
+                valueListenable: sliverCollapsedVN,
+                builder: (_, sliverCollapsedValue, child) {
+                  print('ValueListenableBuilder ${sliverCollapsedValue}'); // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
+                  return Visibility(
+                    visible: sliverCollapsedValue,
+                    child: Text(
+                      'Clinica Central ABC',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
               flexibleSpace: FlexibleSpaceBar(
                 stretchModes: const [
                   StretchMode.zoomBackground,
@@ -70,6 +125,6 @@ class SupplierPage extends StatelessWidget {
             ),
           ],
         ),
-       );
+      );
   }
 }
