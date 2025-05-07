@@ -5,7 +5,9 @@ import 'package:cuidapet_mobile/app/core/rest_client/rest_client_exception.dart'
 import 'package:cuidapet_mobile/app/core/rest_client/rest_client.dart';
 import 'package:cuidapet_mobile/app/entities/address_entity.dart';
 import 'package:cuidapet_mobile/app/models/supplier_category_model.dart';
+import 'package:cuidapet_mobile/app/models/supplier_model.dart';
 import 'package:cuidapet_mobile/app/models/supplier_nearby_me_model.dart';
+import 'package:cuidapet_mobile/app/models/supplier_services_model.dart';
 
 import './supplier_repository.dart';
 
@@ -57,6 +59,34 @@ class SupplierRepositoryImpl implements SupplierRepository {
       _log.error(message, e, s);
       throw Failure(message: message);
     }
+  }
+
+  @override
+  Future<SupplierModel> findById(int id) async {
+    try {
+      final result = await _restClient.auth().get('/suppliers/$id');
+      return SupplierModel.fromMap(result.data);
+    } on RestClientException catch (e, s) {
+      final message = 'Erro ao buscar dados do fornecedor por id';
+      _log.error(message, e, s);
+      throw Failure(message: message);
+    }
+  }
+
+  @override
+  Future<List<SupplierServicesModel>> findServices(int supplierId) async {
+    try {
+      final result = await _restClient.auth().get('/suppliers/$supplierId/services');
+      final servicesList = result.data?.map<SupplierServicesModel>((jService) => 
+          SupplierNearbyMeModel.fromMap(jService)).toList() ?? <SupplierServicesModel>[];
+      
+      return servicesList;
+    } on RestClientException catch (e, s) {
+      final message = 'Erro ao buscar serviços do fornecedor';
+      _log.error(message, e, s);
+      throw Failure(message: message);
+    }
+
   }
 
 }
