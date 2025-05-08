@@ -100,7 +100,7 @@ abstract class AddressControllerBase with Store, ControllerLifeCycle {
 
     if(address is PlaceModel) { // Quer dizer que estou editando um endereço enviado.
       _placeModel = address;
-    } else if(address is AddressEntity) { // Quer dizer que salvou um endereço
+    } else if(address is AddressEntity) { // Quer dizer que salvou um endereço.
       selectAddress(address);
     }
 

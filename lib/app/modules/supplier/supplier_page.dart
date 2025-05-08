@@ -1,39 +1,43 @@
+import 'package:cuidapet_mobile/app/core/life_cycle/page_life_cycle_state.dart';
 import 'package:cuidapet_mobile/app/core/ui/extensions/theme_extension.dart';
+import 'package:cuidapet_mobile/app/modules/supplier/supplier_controller.dart';
 import 'package:cuidapet_mobile/app/modules/supplier/widgets/supplier_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'widgets/supplier_service_widget.dart';
 
 class SupplierPage extends StatefulWidget {
+  final int _supplierId;
 
-  const SupplierPage({ super.key });
+  const SupplierPage({super.key, required int supplierId})
+      : _supplierId = supplierId;
 
   @override
   State<SupplierPage> createState() => _SupplierPageState();
 }
 
-class _SupplierPageState extends State<SupplierPage> {
-
+class _SupplierPageState
+    extends PageLifeCycleState<SupplierController, SupplierPage> {
   late ScrollController _scrollController;
-  bool sliverCollapsed = false; // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
+  // bool sliverCollapsed = false;
   final sliverCollapsedVN = ValueNotifier(false);
+
+  @override
+  Map<String, dynamic>? get params => {'supplierId': widget._supplierId};
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-
-      if(_scrollController.offset > 180 && 
-          !_scrollController.position.outOfRange)  {
-            // sliverCollapsed = true; SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
-            sliverCollapsedVN.value = true;
-      } else if(_scrollController.offset <= 180 && 
+      if (_scrollController.offset > 180 &&
           !_scrollController.position.outOfRange) {
-            // sliverCollapsed = false; SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
-            sliverCollapsedVN.value = false;
+        sliverCollapsedVN.value = true;
+      } else if (_scrollController.offset <= 180 &&
+          !_scrollController.position.outOfRange) {
+        sliverCollapsedVN.value = false;
       }
-
     });
   }
 
@@ -45,86 +49,98 @@ class _SupplierPageState extends State<SupplierPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'); // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
-      return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: context.primaryColor,
-          label: Text(
-            'Fazer agendamento',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          icon: Icon(
-            Icons.schedule,
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: context.primaryColor,
+        label: Text(
+          'Fazer agendamento',
+          style: TextStyle(
             color: Colors.white,
           ),
-          onPressed: (){
-            
-          },
         ),
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 200,
-              iconTheme: IconThemeData(
-                color: Colors.white,
-              ),
-              pinned: true,
-              title: ValueListenableBuilder<bool>(
-                valueListenable: sliverCollapsedVN,
-                builder: (_, sliverCollapsedValue, child) {
-                  print('ValueListenableBuilder ${sliverCollapsedValue}'); // SERÁ REMOVIDO NO PRÓXIMO COMMIT, APENAS PARA COMPEREENÇÂO DO BUG FIX
-                  return Visibility(
-                    visible: sliverCollapsedValue,
-                    child: Text(
-                      'Clinica Central ABC',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [
-                  StretchMode.zoomBackground,
-                  StretchMode.fadeTitle,
-                ],
-                background: Image.network(
-                  'https://th.bing.com/th/id/OIP.Vop-SSWwL7DYODRCid46eAHaE8?w=276&h=185&c=7&r=0&o=5&pid=1.7',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stacktrace) => SizedBox.shrink(),
+        icon: Icon(
+          Icons.schedule,
+          color: Colors.white,
+        ),
+        onPressed: () {},
+      ),
+      body: Observer(
+        builder: (_) {
+
+          final supplier = controller.supplierModel;
+
+          if(supplier == null) {
+            return const Text('Buscando dados do fornecedor');
+          }
+
+          return CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 200,
+                iconTheme: IconThemeData(
+                  color: Colors.white,
                 ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: SupplierDetail(),
-            ),
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Serviços (0 Selecionados)',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                pinned: true,
+                title: ValueListenableBuilder<bool>(
+                  valueListenable: sliverCollapsedVN,
+                  builder: (_, sliverCollapsedValue, child) {
+                    return Visibility(
+                      visible: sliverCollapsedValue,
+                      child: Text(
+                        supplier.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  stretchModes: const [
+                    StretchMode.zoomBackground,
+                    StretchMode.fadeTitle,
+                  ],
+                  background: Image.network(
+                    supplier.logo,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stacktrace) =>
+                        SizedBox.shrink(),
                   ),
                 ),
               ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: 200,
-                (context, index) {
-                  return SupplierServiceWidget();
-                }
+              SliverToBoxAdapter(
+                child: SupplierDetail(
+                  supplier: supplier,
+                ),
               ),
-            ),
-          ],
-        ),
-      );
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Serviços (0 Selecionados)',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: controller.supplierServices.length,
+                  (context, index) {
+                    final service = controller.supplierServices[index];
+                    return SupplierServiceWidget(
+                      service: service,
+                    );
+                }),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

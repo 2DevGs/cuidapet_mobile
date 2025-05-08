@@ -77,10 +77,9 @@ class SupplierRepositoryImpl implements SupplierRepository {
   Future<List<SupplierServicesModel>> findServices(int supplierId) async {
     try {
       final result = await _restClient.auth().get('/suppliers/$supplierId/services');
-      final servicesList = result.data?.map<SupplierServicesModel>((jService) => 
-          SupplierNearbyMeModel.fromMap(jService)).toList() ?? <SupplierServicesModel>[];
+      return result.data?.map<SupplierServicesModel>((jService) => 
+          SupplierServicesModel.fromMap(jService)).toList() ?? <SupplierServicesModel>[];
       
-      return servicesList;
     } on RestClientException catch (e, s) {
       final message = 'Erro ao buscar serviços do fornecedor';
       _log.error(message, e, s);
