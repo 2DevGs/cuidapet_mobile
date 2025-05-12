@@ -4,8 +4,10 @@ import 'package:cuidapet_mobile/app/core/logger/app_logger.dart';
 import 'package:cuidapet_mobile/app/core/ui/widgets/loader.dart';
 import 'package:cuidapet_mobile/app/models/supplier_model.dart';
 import 'package:cuidapet_mobile/app/models/supplier_services_model.dart';
+import 'package:cuidapet_mobile/app/modules/schedules/model/schedule_view_model.dart';
 import 'package:cuidapet_mobile/app/services/supplier/supplier_service.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -19,7 +21,7 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
   final SupplierService _supplierService;
   final AppLogger _log;
 
-  int _supplierID = 0;
+  int _supplierId = 0;
 
   @readonly
   SupplierModel? _supplierModel;
@@ -39,7 +41,7 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
   @override
   void onInit([Map<String, dynamic>? params]) {
 
-      _supplierID = params?['supplierId'] ?? 0;
+      _supplierId = params?['supplierId'] ?? 0;
     
   }
 
@@ -59,7 +61,7 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
   @action
   Future<void> _findSupplierById() async {
     try {
-      _supplierModel = await _supplierService.findById(_supplierID);
+      _supplierModel = await _supplierService.findById(_supplierId);
     }  catch (e, s) {
       final message = 'Erro ao buscar dados do fornecedor';
       _log.error(message, e, s);
@@ -70,7 +72,7 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
   @action
   Future<void> _findSupplierServices() async {
     try {
-      _supplierServices = await _supplierService.findServices(_supplierID);
+      _supplierServices = await _supplierService.findServices(_supplierId);
     }  catch (e, s) {
       final message = 'Erro ao buscar serviços do fornecedor';
       _log.error(message, e, s);
@@ -101,6 +103,26 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
       await Clipboard.setData(ClipboardData(text: _supplierModel?.phone ?? ''));
       Messages.info('Telefone copiado!');
     }
+  }
+
+  Future<void> goToGeoOrCopyAddressToClipart() async {
+    final geoUrl = 'geo:${_supplierModel?.lat}, ${_supplierModel?.lng}';
+
+    if(await canLaunchUrlString(geoUrl)) {
+      await launchUrlString(geoUrl);
+    } else {
+      await Clipboard.setData(ClipboardData(text: _supplierModel?.address ?? ''));
+      Messages.info('Endereço copiado!');
+    }
+  }
+
+  void goToSchedule() {
+    Modular.to.pushNamed('/schedules/', 
+      arguments: ScheduleViewModel(
+        supplierId: _supplierId,
+        services: _supplierServices.toList(),
+      ),
+    );
   }
 
 }

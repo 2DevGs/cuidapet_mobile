@@ -47,6 +47,7 @@ class SupplierDetail extends StatelessWidget {
           ),
         ),
         ListTile(
+          onTap: controller.goToGeoOrCopyAddressToClipart, //Como este método não tem atributos, ele também pode ser chamado assim.
           leading: const Icon(
             Icons.location_city,
             color: Colors.black,
@@ -54,7 +55,7 @@ class SupplierDetail extends StatelessWidget {
           title: Text(supplier.address),
         ),
         ListTile(
-          onTap: () => controller.gotoPhoneOrCopyPhoneToClipart(),
+          onTap: () => controller.gotoPhoneOrCopyPhoneToClipart(), //Como este método não tem atributos, ele também pode ser chamado assim.
           leading: const Icon(
             Icons.local_phone,
             color: Colors.black,

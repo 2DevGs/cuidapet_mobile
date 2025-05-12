@@ -70,7 +70,7 @@ class _SupplierPageState
                   Icons.schedule,
                   color: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: controller.goToSchedule,
               ),
             ),
           );
