@@ -5,7 +5,11 @@ import 'package:cuidapet_mobile/app/core/ui/widgets/loader.dart';
 import 'package:cuidapet_mobile/app/models/supplier_model.dart';
 import 'package:cuidapet_mobile/app/models/supplier_services_model.dart';
 import 'package:cuidapet_mobile/app/services/supplier/supplier_service.dart';
+import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../core/ui/widgets/messages.dart';
 part 'supplier_controller.g.dart';
 
 class SupplierController = SupplierControllerBase with _$SupplierController;
@@ -87,5 +91,16 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
       _servicesSelected.contains(servicesModel);
 
   int get totalServicesSelected => _servicesSelected.length;
+
+  Future<void> gotoPhoneOrCopyPhoneToClipart() async {
+    final phoneUrl = 'tel:${_supplierModel?.phone}';
+
+    if(await canLaunchUrlString(phoneUrl)) {
+      await launchUrlString(phoneUrl);
+    } else {
+      await Clipboard.setData(ClipboardData(text: _supplierModel?.phone ?? ''));
+      Messages.info('Telefone copiado!');
+    }
+  }
 
 }

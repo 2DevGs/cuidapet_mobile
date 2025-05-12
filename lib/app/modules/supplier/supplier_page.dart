@@ -122,6 +122,7 @@ class _SupplierPageState
               ),
               SliverToBoxAdapter(
                 child: SupplierDetail(
+                  controller: controller,
                   supplier: supplier,
                 ),
               ),
