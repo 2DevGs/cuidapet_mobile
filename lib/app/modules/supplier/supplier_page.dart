@@ -51,26 +51,36 @@ class _SupplierPageState
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: context.primaryColor,
-        label: Text(
-          'Fazer agendamento',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        icon: Icon(
-          Icons.schedule,
-          color: Colors.white,
-        ),
-        onPressed: () {},
+      floatingActionButton: Observer(
+        builder: (_) {
+          return AnimatedOpacity(
+            duration: Duration(milliseconds: 300),
+            opacity: controller.totalServicesSelected > 0 ? 1 : 0,
+            child: Visibility(
+              visible: controller.totalServicesSelected > 0,
+              child: FloatingActionButton.extended(
+                backgroundColor: context.primaryColor,
+                label: Text(
+                  'Fazer agendamento',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                icon: Icon(
+                  Icons.schedule,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              ),
+            ),
+          );
+        },
       ),
       body: Observer(
         builder: (_) {
-
           final supplier = controller.supplierModel;
 
-          if(supplier == null) {
+          if (supplier == null) {
             return const Text('Buscando dados do fornecedor');
           }
 
@@ -115,12 +125,12 @@ class _SupplierPageState
                   supplier: supplier,
                 ),
               ),
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Serviços (0 Selecionados)',
-                    style: TextStyle(
+                    'Serviços (${controller.totalServicesSelected} selecionado${controller.totalServicesSelected > 1 ? 's' : ''})',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
@@ -129,12 +139,13 @@ class _SupplierPageState
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  childCount: controller.supplierServices.length,
-                  (context, index) {
-                    final service = controller.supplierServices[index];
-                    return SupplierServiceWidget(
-                      service: service,
-                    );
+                    childCount: controller.supplierServices.length,
+                    (context, index) {
+                  final service = controller.supplierServices[index];
+                  return SupplierServiceWidget(
+                    service: service,
+                    supplierController: controller,
+                  );
                 }),
               ),
             ],

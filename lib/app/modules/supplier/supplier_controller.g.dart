@@ -45,6 +45,25 @@ mixin _$SupplierController on SupplierControllerBase, Store {
     });
   }
 
+  late final _$_servicesSelectedAtom =
+      Atom(name: 'SupplierControllerBase._servicesSelected', context: context);
+
+  ObservableList<SupplierServicesModel> get servicesSelected {
+    _$_servicesSelectedAtom.reportRead();
+    return super._servicesSelected;
+  }
+
+  @override
+  ObservableList<SupplierServicesModel> get _servicesSelected =>
+      servicesSelected;
+
+  @override
+  set _servicesSelected(ObservableList<SupplierServicesModel> value) {
+    _$_servicesSelectedAtom.reportWrite(value, super._servicesSelected, () {
+      super._servicesSelected = value;
+    });
+  }
+
   late final _$_findSupplierByIdAsyncAction =
       AsyncAction('SupplierControllerBase._findSupplierById', context: context);
 
@@ -61,6 +80,20 @@ mixin _$SupplierController on SupplierControllerBase, Store {
   Future<void> _findSupplierServices() {
     return _$_findSupplierServicesAsyncAction
         .run(() => super._findSupplierServices());
+  }
+
+  late final _$SupplierControllerBaseActionController =
+      ActionController(name: 'SupplierControllerBase', context: context);
+
+  @override
+  void addOrRemoveService(SupplierServicesModel supplierServiceModel) {
+    final _$actionInfo = _$SupplierControllerBaseActionController.startAction(
+        name: 'SupplierControllerBase.addOrRemoveService');
+    try {
+      return super.addOrRemoveService(supplierServiceModel);
+    } finally {
+      _$SupplierControllerBaseActionController.endAction(_$actionInfo);
+    }
   }
 
   @override

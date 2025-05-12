@@ -23,6 +23,9 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
   @readonly
   var _supplierServices = <SupplierServicesModel>[];
 
+  @readonly
+  var _servicesSelected = <SupplierServicesModel>[].asObservable();
+
   SupplierControllerBase({
     required SupplierService supplierService,
     required AppLogger log,
@@ -70,5 +73,19 @@ abstract class SupplierControllerBase with Store, ControllerLifeCycle{
       throw Failure(message: message);
     }
   }
+
+  @action
+  void addOrRemoveService(SupplierServicesModel supplierServiceModel) {
+    if(_servicesSelected.contains(supplierServiceModel)) {
+      _servicesSelected.remove(supplierServiceModel);
+    } else {
+      _servicesSelected.add(supplierServiceModel);
+    }
+  }
+
+  bool isServiceSelected(SupplierServicesModel servicesModel) => 
+      _servicesSelected.contains(servicesModel);
+
+  int get totalServicesSelected => _servicesSelected.length;
 
 }
